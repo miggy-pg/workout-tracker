@@ -7,51 +7,30 @@ import "../assets/bootstrap/css/bootstrap.css";
 import "../assets/bootstrap/css/bootstrap.min.css";
 import "../assets/bootstrap/css/bootstrap.min.css.map";
 import "../assets/css/style.css";
-import axios from "axios";
 
 const apiKey = "EbXNorgMnC8zB/xZxM3CNg==FOyxrD2aAhQMHMXc";
 const apiUrl = "https://api.api-ninjas.com/v1/exercises";
-
 const headers = {
   "X-API-Key": apiKey,
 };
 
 function HomePage() {
-  const makeAPICall = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/cors", {
-        mode: "cors",
-      });
-      await response.json().then((json) => {
-        console.log(json);
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
   useEffect(() => {
+    const makeAPICall = async () => {
+      try {
+        const response = await fetch(apiUrl, {
+          mode: "cors",
+          headers,
+        });
+        await response.json().then((json) => {
+          console.log(json);
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
     makeAPICall();
   }, []);
-
-  // useEffect(() => {
-  //   axios
-  //     .post(
-  //       "https://api.api-ninjas.com/v1/exercises?muscle=biceps",
-
-  //       {
-  //         headers: {
-  //           Authorization:
-  //             "Bearer " + "EbXNorgMnC8zB/xZxM3CNg==FOyxrD2aAhQMHMXc",
-  //         },
-  //       }
-  //     )
-  //     .then(async (response) => {
-  //       //Handel response here
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
 
   return (
     <section className="steps">
