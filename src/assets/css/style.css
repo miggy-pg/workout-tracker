@@ -77,30 +77,6 @@ p {
   font-weight: bold;
 }
 
-.gutters-80.row {
-  margin-right: -40px;
-  margin-left: -40px;
-}
-
-@media (max-width: 1199px) {
-  .gutters-80.row {
-    margin-right: -15px;
-    margin-left: -15px;
-  }
-}
-
-.gutters-80 > [class^="col-"] {
-  padding-right: 40px;
-  padding-left: 40px;
-}
-
-@media (max-width: 1199px) {
-  .gutters-80 > [class^="col-"] {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-
 .page-section {
   padding-top: 100px;
   padding-bottom: 120px;
