@@ -12,6 +12,7 @@ import { Header } from "../components/common/Header";
 import { Container } from "../components/common/Container";
 import { ExerciseTypes } from "../components/Management/ExerciseType";
 import { ExerciseList } from "../components/Management/ExerciseList";
+import { Timer } from "../components/common/Timer";
 
 const apiKey = "EbXNorgMnC8zB/xZxM3CNg==FOyxrD2aAhQMHMXc";
 const headers = {
@@ -74,7 +75,9 @@ function HomePage() {
             <Container>
               <div className="text-center steps__single steps__single-last">
                 <img src="assets/images/step3.png" alt="" />
-                <p>LOREM IPSUM DOLOR SIT AMET</p>
+                <p>
+                  <Timer />
+                </p>
               </div>
             </Container>
           </div>
