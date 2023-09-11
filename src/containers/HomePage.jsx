@@ -19,8 +19,18 @@ const headers = {
   "X-API-Key": apiKey,
 };
 
+const initialState = {
+  exercises: [],
+
+  // 'loading', 'error', 'ready', 'active', 'finished'
+  status: "loading",
+};
+
+function reducer(state, action) {}
+
 function HomePage() {
   const [selectedType, setSelectedType] = useState("");
+  const [selectedList, setSelectedList] = useState("");
   const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
@@ -56,6 +66,10 @@ function HomePage() {
     setSelectedType(type);
   };
 
+  const handleSelectList = (exercise) => {
+    setSelectedList(exercise);
+  };
+
   return (
     <section className="steps">
       <div className="container">
@@ -63,27 +77,22 @@ function HomePage() {
           <Header />
           <div className="row">
             <Container>
-              <div className="text-center steps__single steps__single-first"></div>
               <ExerciseTypes
                 typeList={typeList}
                 handleSelectType={handleSelectType}
               />
             </Container>
             <Container>
-              <ExerciseList selectedType={selectedType} exercises={exercises} />
+              <ExerciseList
+                selectedType={selectedType}
+                exercises={exercises}
+                handleSelectList={handleSelectList}
+              />
             </Container>
             <Container>
-              <div className="text-center steps__single steps__single-last">
-                <img src="assets/images/step3.png" alt="" />
-                <p>
-                  <Timer />
-                </p>
-              </div>
+              {selectedList && <Timer selectedList={selectedList} />}
             </Container>
           </div>
-          <a className="button" href="#rwar">
-            START NOW
-          </a>
         </div>
       </div>
     </section>

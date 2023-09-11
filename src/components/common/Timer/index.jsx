@@ -3,14 +3,15 @@ import {
   buildStyles,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import image from "../../../assets/media/atlas_stones.png";
+import { fitness_image } from "../../../assets/media/fitness_image";
 
-const value = 0.66;
-// const image = require("");
+const value = 0.99;
 
-export function Timer() {
+export function Timer({ selectedList }) {
+  const image = fitness_image.filter((image) => image.includes(selectedList));
+
   return (
-    <div>
+    <div className="wrapper-timer">
       <CircularProgressbarWithChildren
         value={value}
         maxValue={1}
@@ -21,8 +22,11 @@ export function Timer() {
           trailColor: "rgba(255,255,255,.2)",
         })}
       >
-        <img style={{ width: 140, margin: "auto" }} src={image} alt="doge" />
+        <img style={{ width: 200 }} src={image} alt="doge" />
       </CircularProgressbarWithChildren>
+      <a className="button mt-2" href="#rwar">
+        START NOW
+      </a>
     </div>
   );
 }

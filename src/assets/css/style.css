@@ -23,9 +23,10 @@
 ul li,
 li {
   list-style-type: none;
+  margin: auto;
 }
 
-ul {
+ol {
   padding-left: 0;
 }
 
@@ -158,34 +159,10 @@ p {
   margin-bottom: 80px;
 }
 
-.steps__single img {
-  margin-bottom: 30px;
-}
-
 .steps__single p {
   max-width: 170px;
   margin-right: auto;
   margin-left: auto;
-}
-
-.steps__single-first {
-  float: left;
-}
-
-@media (max-width: 991px) {
-  .steps__single-first {
-    float: none;
-  }
-}
-
-.steps__single-last {
-  float: right;
-}
-
-@media (max-width: 991px) {
-  .steps__single-last {
-    float: none;
-  }
 }
 
 .button {
@@ -200,20 +177,17 @@ p {
   box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.21);
 }
 
-.button--white {
-  background-color: #fff;
-  color: #0f81f8;
+.wrapper-timer {
+  width: 25rem;
+  height: 25rem;
+  margin: auto;
 }
 
-.button--form {
-  display: inline-block;
-  padding: 12px 70px;
-  border-radius: 30px;
-  border: 0;
-  font-family: "Geometria-Medium";
-  background-color: #fff;
-  font-size: 16px;
-  color: #0f81f8;
-  -webkit-box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.21);
-  box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.21);
+.align-center {
+  margin: auto;
+  border: 1px solid red;
+}
+
+.mt-2 {
+  margin-top: 2rem;
 }
