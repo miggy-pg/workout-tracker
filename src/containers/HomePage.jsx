@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "../assets/bootstrap/css/bootstrap-theme.css";
 import "../assets/bootstrap/css/bootstrap-theme.css.map";
 import "../assets/bootstrap/css/bootstrap-theme.min.css";
@@ -13,6 +13,9 @@ import { Container } from "../components/common/Container";
 import { ExerciseTypes } from "../components/Management/ExerciseType";
 import { ExerciseList } from "../components/Management/ExerciseList";
 import { Timer } from "../components/common/Timer";
+import { Loader } from "../components/common/Loader";
+import { Error } from "../components/common/Error";
+import { fitness_image } from "../assets/media/fitness_image";
 
 const apiKey = "EbXNorgMnC8zB/xZxM3CNg==FOyxrD2aAhQMHMXc";
 const headers = {
@@ -20,18 +23,45 @@ const headers = {
 };
 
 const initialState = {
-  exercises: [],
+  exerciseTypes: [],
 
   // 'loading', 'error', 'ready', 'active', 'finished'
   status: "loading",
+  points: 0,
+  selectedList: "",
+  imageExercise: "",
 };
 
-function reducer(state, action) {}
+function reducer(state, action) {
+  switch (action.type) {
+    case "dataReceived":
+      return { ...state, exerciseTypes: action.payload, status: "ready" };
+    case "dataFailed":
+      return { ...state, status: "error" };
+    case "selectedList":
+      return {
+        ...state,
+        selectedList: action.selectedList,
+        imageExercise: fitness_image.filter((image) =>
+          image.includes(action.selectedList)
+        ),
+      };
+    default:
+      throw new Error("Action unknown.");
+  }
+}
 
 function HomePage() {
+  // normally this is the syntax of useReducer
+  // const [ state, dispatch ] = useReducer(reducer, initialState)
+
+  // we are destructuring 'state' in this part
+  // so state is destructured into 'exerciseTypes, status'
+  const [
+    { exerciseTypes, status, points, selectedList, imageExercise },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   const [selectedType, setSelectedType] = useState("");
-  const [selectedList, setSelectedList] = useState("");
-  const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
     const makeAPICall = async () => {
@@ -45,18 +75,20 @@ function HomePage() {
         );
         await response
           .json()
-          .then((json) =>
-            json.map((exercise, key) => ({ ...exercise, id: key }))
+          .then((data) =>
+            data.map((exercise, key) => ({ ...exercise, id: key, points: 10 }))
           )
-          .then((res) => setExercises(res));
-      } catch (e) {}
+          .then((data) => dispatch({ type: "dataReceived", payload: data }));
+      } catch (e) {
+        dispatch((err) => dispatch({ type: "dataFailed" }));
+      }
     };
     makeAPICall();
   }, []);
 
   // filter out exercise types
   const typeList = [];
-  exercises.filter(
+  exerciseTypes.filter(
     (arr, index, self) =>
       index === self.findIndex((t) => t.type === arr.type) &&
       typeList.push(arr.type)
@@ -66,32 +98,47 @@ function HomePage() {
     setSelectedType(type);
   };
 
-  const handleSelectList = (exercise) => {
-    setSelectedList(exercise);
-  };
-
+  // const handleSelectList = (exercise) => {
+  //   setSelectedList(exercise);
+  // };
+  console.log("selectedList: ", selectedList);
   return (
     <section className="steps">
       <div className="container">
         <div className="page-section text-center">
           <Header />
           <div className="row">
-            <Container>
-              <ExerciseTypes
-                typeList={typeList}
-                handleSelectType={handleSelectType}
-              />
-            </Container>
-            <Container>
-              <ExerciseList
-                selectedType={selectedType}
-                exercises={exercises}
-                handleSelectList={handleSelectList}
-              />
-            </Container>
-            <Container>
-              {selectedList && <Timer selectedList={selectedList} />}
-            </Container>
+            {status === "loading" && (
+              <Container>
+                {" "}
+                <Loader />
+              </Container>
+            )}
+            {status === "error" && (
+              <Container>
+                <Error />
+              </Container>
+            )}
+            {status === "ready" && (
+              <>
+                <Container>
+                  <ExerciseTypes
+                    typeList={typeList}
+                    handleSelectType={handleSelectType}
+                  />
+                </Container>
+                <Container>
+                  <ExerciseList
+                    selectedType={selectedType}
+                    exerciseTypes={exerciseTypes}
+                    dispatch={dispatch}
+                  />
+                </Container>
+                <Container>
+                  {selectedList && <Timer imageExercise={imageExercise[0]} />}
+                </Container>
+              </>
+            )}
           </div>
         </div>
       </div>

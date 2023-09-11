@@ -3,13 +3,11 @@ import {
   buildStyles,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { fitness_image } from "../../../assets/media/fitness_image";
 
 const value = 0.99;
 
-export function Timer({ selectedList }) {
-  const image = fitness_image.filter((image) => image.includes(selectedList));
-
+export function Timer({ imageExercise }) {
+  console.log("image: ", imageExercise);
   return (
     <div className="wrapper-timer">
       <CircularProgressbarWithChildren
@@ -22,7 +20,7 @@ export function Timer({ selectedList }) {
           trailColor: "rgba(255,255,255,.2)",
         })}
       >
-        <img style={{ width: 200 }} src={image} alt="doge" />
+        <img style={{ width: 200 }} src={imageExercise} alt="doge" />
       </CircularProgressbarWithChildren>
       <a className="button mt-2" href="#rwar">
         START NOW

@@ -6,17 +6,22 @@ const exercise_list = {
   color: "#39B4C6",
 };
 
-export function ExerciseList({ selectedType, exercises, handleSelectList }) {
+export function ExerciseList({ selectedType, exerciseTypes, dispatch }) {
   return (
     <div className="text-center steps__single">
       <ol>
-        {exercises.map(
+        {exerciseTypes.map(
           (exercise, key) =>
             exercise.type === selectedType && (
               <li
                 style={exercise_list}
                 key={key}
-                onClick={() => handleSelectList(exercise.name.toLowerCase())}
+                onClick={() =>
+                  dispatch({
+                    type: "selectedList",
+                    selectedList: exercise.name.toLowerCase(),
+                  })
+                }
               >
                 {exercise.name.toUpperCase()}
               </li>
