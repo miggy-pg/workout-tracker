@@ -42,8 +42,9 @@ function reducer(state, action) {
       return {
         ...state,
         selectedList: action.selectedList,
-        imageExercise: fitness_image.filter((image) =>
-          image.includes(action.selectedList)
+        imageExercise: fitness_image.filter(
+          (image) => console.log(image)
+          // image.includes(action.selectedList)
         ),
       };
     default:
@@ -98,10 +99,6 @@ function HomePage() {
     setSelectedType(type);
   };
 
-  // const handleSelectList = (exercise) => {
-  //   setSelectedList(exercise);
-  // };
-  console.log("selectedList: ", selectedList);
   return (
     <section className="steps">
       <div className="container">

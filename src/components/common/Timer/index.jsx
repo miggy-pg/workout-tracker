@@ -7,7 +7,6 @@ import "react-circular-progressbar/dist/styles.css";
 const value = 0.99;
 
 export function Timer({ imageExercise }) {
-  console.log("image: ", imageExercise);
   return (
     <div className="wrapper-timer">
       <CircularProgressbarWithChildren

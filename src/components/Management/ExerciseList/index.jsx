@@ -19,7 +19,7 @@ export function ExerciseList({ selectedType, exerciseTypes, dispatch }) {
                 onClick={() =>
                   dispatch({
                     type: "selectedList",
-                    selectedList: exercise.name.toLowerCase(),
+                    selectedList: key,
                   })
                 }
               >
