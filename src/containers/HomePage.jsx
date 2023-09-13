@@ -28,6 +28,7 @@ const initialState = {
   // 'loading', 'error', 'ready', 'active', 'finished'
   status: "loading",
   points: 0,
+  selectedType: "",
   selectedList: "",
   imageExercise: "",
 };
@@ -38,13 +39,15 @@ function reducer(state, action) {
       return { ...state, exerciseTypes: action.payload, status: "ready" };
     case "dataFailed":
       return { ...state, status: "error" };
+    case "selectedType":
+      return { ...state, selectedType: action.payload };
     case "selectedList":
+      console.log(action);
       return {
         ...state,
-        selectedList: action.selectedList,
-        imageExercise: fitness_image.filter(
-          (image) => console.log(image)
-          // image.includes(action.selectedList)
+        selectedListID: action.selectedListID,
+        imageExercise: fitness_image.filter((image) =>
+          image.includes(action.payload)
         ),
       };
     default:
@@ -59,10 +62,16 @@ function HomePage() {
   // we are destructuring 'state' in this part
   // so state is destructured into 'exerciseTypes, status'
   const [
-    { exerciseTypes, status, points, selectedList, imageExercise },
+    {
+      exerciseTypes,
+      status,
+      points,
+      selectedType,
+      selectedListID,
+      imageExercise,
+    },
     dispatch,
   ] = useReducer(reducer, initialState);
-  const [selectedType, setSelectedType] = useState("");
 
   useEffect(() => {
     const makeAPICall = async () => {
@@ -87,27 +96,34 @@ function HomePage() {
     makeAPICall();
   }, []);
 
-  // filter out exercise types
+  // filter out exercise types and remove duplicates
   const typeList = [];
   exerciseTypes.filter(
     (arr, index, self) =>
       index === self.findIndex((t) => t.type === arr.type) &&
       typeList.push(arr.type)
   );
-
-  const handleSelectType = (type) => {
-    setSelectedType(type);
-  };
+  const exerciseList = exerciseTypes.filter(
+    (exercise) => exercise.type === selectedType
+  );
+  const exerciseListLength = exerciseList.length;
+  const newExerciseList = Array.from(
+    { length: exerciseListLength },
+    (_, index) => ({ ...exerciseList[index], id: index })
+  );
 
   return (
     <section className="steps">
       <div className="container">
         <div className="page-section text-center">
-          <Header />
+          <Header
+            selectedType={selectedType}
+            selectedListID={selectedListID}
+            exerciseListLength={exerciseListLength}
+          />
           <div className="row">
             {status === "loading" && (
               <Container>
-                {" "}
                 <Loader />
               </Container>
             )}
@@ -119,20 +135,17 @@ function HomePage() {
             {status === "ready" && (
               <>
                 <Container>
-                  <ExerciseTypes
-                    typeList={typeList}
-                    handleSelectType={handleSelectType}
-                  />
+                  <ExerciseTypes typeList={typeList} dispatch={dispatch} />
                 </Container>
                 <Container>
                   <ExerciseList
+                    newExerciseList={newExerciseList}
                     selectedType={selectedType}
-                    exerciseTypes={exerciseTypes}
                     dispatch={dispatch}
                   />
                 </Container>
                 <Container>
-                  {selectedList && <Timer imageExercise={imageExercise[0]} />}
+                  {selectedListID && <Timer imageExercise={imageExercise[0]} />}
                 </Container>
               </>
             )}

@@ -1,11 +1,16 @@
-export function ExerciseTypes(props) {
+export function ExerciseTypes({ dispatch, typeList }) {
   return (
     <>
       <p>Types</p>
       <ol>
         {/* TOFIX: use dispatch instead of function */}
-        {props.typeList.map((exercise, key) => (
-          <li key={key} onClick={() => props.handleSelectType(exercise)}>
+        {typeList.map((exercise, key) => (
+          <li
+            key={key}
+            onClick={() =>
+              dispatch({ type: "selectedType", payload: exercise })
+            }
+          >
             <mark>{exercise.toUpperCase()}</mark>
           </li>
         ))}
