@@ -17,8 +17,8 @@ export function ExerciseList({ newExerciseList, dispatch }) {
             onClick={() =>
               dispatch({
                 type: "selectedList",
-                selectedListID: key + 1,
-                payload: exercise.name.toLowerCase(),
+                selectedListID: key,
+                newExerciseList: newExerciseList,
               })
             }
           >

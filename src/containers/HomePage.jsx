@@ -24,13 +24,15 @@ const headers = {
 
 const initialState = {
   exerciseTypes: [],
-
+  newExerciseList: [],
   // 'loading', 'error', 'ready', 'active', 'finished'
   status: "loading",
   points: 0,
   selectedType: "",
-  selectedList: "",
+  selectedListID: null,
+  exerciseListLength: 0,
   imageExercise: "",
+  fitnessSeconds: 3,
 };
 
 function reducer(state, action) {
@@ -40,14 +42,44 @@ function reducer(state, action) {
     case "dataFailed":
       return { ...state, status: "error" };
     case "selectedType":
-      return { ...state, selectedType: action.payload };
+      const exerciseList = state.exerciseTypes.filter(
+        (exercise) => exercise.type === action.payload
+      );
+      const exerciseListLength = exerciseList.length;
+      const newExerciseList = Array.from(
+        { length: exerciseListLength },
+        (_, index) => ({ ...exerciseList[index], id: index })
+      );
+      return {
+        ...state,
+        selectedType: action.payload,
+        newExerciseList: newExerciseList,
+        exerciseListLength: exerciseListLength,
+      };
     case "selectedList":
-      console.log(action);
+      const payload =
+        state.newExerciseList[action.selectedListID].name.toLowerCase();
       return {
         ...state,
         selectedListID: action.selectedListID,
+        imageExercise: fitness_image.filter((image) => image.includes(payload)),
+      };
+    case "tick":
+      console.log("state: ", state);
+      console.log("action: ", action.selectedListID);
+      // const index = ;
+      // const nextPayload = console.log("nextPayload: ", nextPayload);
+      // console.log("image: ", image);
+      const newID =
+        state.fitnessSeconds === 0
+          ? action.selectedListID + 1
+          : state.selectedListID;
+      return {
+        ...state,
+        fitnessSeconds: state.fitnessSeconds - 1,
+        selectedListID: newID,
         imageExercise: fitness_image.filter((image) =>
-          image.includes(action.payload)
+          image.includes(state.newExerciseList[newID].name.toLowerCase())
         ),
       };
     default:
@@ -56,6 +88,8 @@ function reducer(state, action) {
 }
 
 function HomePage() {
+  const [isPlayed, setIsPlayed] = useState(false);
+
   // normally this is the syntax of useReducer
   // const [ state, dispatch ] = useReducer(reducer, initialState)
 
@@ -66,13 +100,16 @@ function HomePage() {
       exerciseTypes,
       status,
       points,
+      newExerciseList,
+      exerciseListLength,
       selectedType,
       selectedListID,
       imageExercise,
+      fitnessSeconds,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
-
+  console.log("imageExercise: ", imageExercise);
   useEffect(() => {
     const makeAPICall = async () => {
       try {
@@ -95,7 +132,7 @@ function HomePage() {
     };
     makeAPICall();
   }, []);
-
+  console.log("selectListID: ", selectedListID);
   // filter out exercise types and remove duplicates
   const typeList = [];
   exerciseTypes.filter(
@@ -103,15 +140,6 @@ function HomePage() {
       index === self.findIndex((t) => t.type === arr.type) &&
       typeList.push(arr.type)
   );
-  const exerciseList = exerciseTypes.filter(
-    (exercise) => exercise.type === selectedType
-  );
-  const exerciseListLength = exerciseList.length;
-  const newExerciseList = Array.from(
-    { length: exerciseListLength },
-    (_, index) => ({ ...exerciseList[index], id: index })
-  );
-
   return (
     <section className="steps">
       <div className="container">
@@ -145,7 +173,15 @@ function HomePage() {
                   />
                 </Container>
                 <Container>
-                  {selectedListID && <Timer imageExercise={imageExercise[0]} />}
+                  {(selectedListID === 0 || selectedListID) && (
+                    <Timer
+                      imageExercise={imageExercise[0]}
+                      dispatch={dispatch}
+                      newExerciseList={newExerciseList}
+                      selectedListID={selectedListID}
+                      fitnessSeconds={fitnessSeconds}
+                    />
+                  )}
                 </Container>
               </>
             )}
