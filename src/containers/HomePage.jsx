@@ -27,6 +27,7 @@ const initialState = {
   newExerciseList: [],
   // 'loading', 'error', 'ready', 'active', 'finished'
   status: "loading",
+  exerciseStatus: "",
   points: 0,
   selectedType: "",
   selectedListID: null,
@@ -34,6 +35,9 @@ const initialState = {
   imageExercise: "",
   fitnessSeconds: 3,
 };
+
+const START_SECONDS = 3;
+const TERMINATE = 0;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -55,6 +59,8 @@ function reducer(state, action) {
         selectedType: action.payload,
         newExerciseList: newExerciseList,
         exerciseListLength: exerciseListLength,
+        exerciseStatus:
+          state.selectedType !== action.selectedType ? "" : state.selectedType,
       };
     case "selectedList":
       const payload =
@@ -72,11 +78,21 @@ function reducer(state, action) {
       // console.log("image: ", image);
       const newID =
         state.fitnessSeconds === 0
-          ? action.selectedListID + 1
+          ? action.selectedListID + 1 < state.exerciseListLength
+            ? action.selectedListID + 1
+            : action.selectedListID
           : state.selectedListID;
+
+      const continueTime =
+        newID === state.exerciseListLength - 1
+          ? TERMINATE
+          : state.fitnessSeconds - 1;
+      const test = continueTime === 0 && newID === state.exerciseListLength - 1;
       return {
         ...state,
-        fitnessSeconds: state.fitnessSeconds - 1,
+        fitnessSeconds:
+          newID !== action.selectedListID ? START_SECONDS : continueTime,
+        exerciseStatus: test && "showCompletedExercise",
         selectedListID: newID,
         imageExercise: fitness_image.filter((image) =>
           image.includes(state.newExerciseList[newID].name.toLowerCase())
@@ -88,8 +104,6 @@ function reducer(state, action) {
 }
 
 function HomePage() {
-  const [isPlayed, setIsPlayed] = useState(false);
-
   // normally this is the syntax of useReducer
   // const [ state, dispatch ] = useReducer(reducer, initialState)
 
@@ -99,6 +113,7 @@ function HomePage() {
     {
       exerciseTypes,
       status,
+      exerciseStatus,
       points,
       newExerciseList,
       exerciseListLength,
@@ -173,14 +188,18 @@ function HomePage() {
                   />
                 </Container>
                 <Container>
-                  {(selectedListID === 0 || selectedListID) && (
-                    <Timer
-                      imageExercise={imageExercise[0]}
-                      dispatch={dispatch}
-                      newExerciseList={newExerciseList}
-                      selectedListID={selectedListID}
-                      fitnessSeconds={fitnessSeconds}
-                    />
+                  {exerciseStatus === "showCompletedExercise" ? (
+                    <h1>Exercise Completed!</h1>
+                  ) : (
+                    (selectedListID === 0 || selectedListID) && (
+                      <Timer
+                        imageExercise={imageExercise[0]}
+                        dispatch={dispatch}
+                        newExerciseList={newExerciseList}
+                        selectedListID={selectedListID}
+                        fitnessSeconds={fitnessSeconds}
+                      />
+                    )
                   )}
                 </Container>
               </>

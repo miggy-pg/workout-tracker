@@ -22,7 +22,6 @@ export function Timer({
       dispatch({
         type: "tick",
         selectedListID: selectedListID,
-        imageExercise: imageExercise,
       });
     }, 1000);
     return () => clearInterval(id);
@@ -31,8 +30,8 @@ export function Timer({
   return (
     <div className="wrapper-timer">
       <CircularProgressbarWithChildren
-        value={value}
-        maxValue={1}
+        value={fitnessSeconds}
+        maxValue={3}
         text={`${value * 100}%`}
         styles={buildStyles({
           textColor: "#000",
